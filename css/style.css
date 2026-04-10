@@ -917,6 +917,16 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .form-group input::placeholder,
 .form-group textarea::placeholder { color: var(--text-dim); }
 
+.form-group.has-error input,
+.form-group.has-error textarea {
+  border-color: #c97b7b;
+}
+.field-error {
+  font-size: 0.75rem;
+  color: #c97b7b;
+  min-height: 1rem;
+}
+
 .form-note {
   font-size: 0.8rem;
   min-height: 1.2rem;

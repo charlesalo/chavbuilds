@@ -94,9 +94,69 @@ document.querySelectorAll('[data-aos]').forEach((el, i) => {
 const contactForm = document.getElementById('contact-form');
 const formStatus = document.getElementById('form-status');
 
+function isValidEmail(val) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
+}
+
+function setFieldError(groupId, errorId, message) {
+  document.getElementById(groupId)?.classList.add('has-error');
+  const el = document.getElementById(errorId);
+  if (el) el.textContent = message;
+}
+
+function clearFieldError(groupId, errorId) {
+  document.getElementById(groupId)?.classList.remove('has-error');
+  const el = document.getElementById(errorId);
+  if (el) el.textContent = '';
+}
+
+function validateForm() {
+  let valid = true;
+
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const message = document.getElementById('message').value.trim();
+
+  if (!name) {
+    setFieldError('group-name', 'error-name', 'Name is required.');
+    valid = false;
+  } else {
+    clearFieldError('group-name', 'error-name');
+  }
+
+  if (!email) {
+    setFieldError('group-email', 'error-email', 'Email is required.');
+    valid = false;
+  } else if (!isValidEmail(email)) {
+    setFieldError('group-email', 'error-email', 'Please enter a valid email address.');
+    valid = false;
+  } else {
+    clearFieldError('group-email', 'error-email');
+  }
+
+  if (!message) {
+    setFieldError('group-message', 'error-message', 'Message is required.');
+    valid = false;
+  } else {
+    clearFieldError('group-message', 'error-message');
+  }
+
+  return valid;
+}
+
 if (contactForm) {
+  // Clear field error as user types
+  ['name', 'email', 'message'].forEach(fieldId => {
+    document.getElementById(fieldId)?.addEventListener('input', () => {
+      clearFieldError(`group-${fieldId}`, `error-${fieldId}`);
+    });
+  });
+
   contactForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
+
     const btn = contactForm.querySelector('button[type="submit"]');
     btn.textContent = 'Sending…';
     btn.disabled = true;
