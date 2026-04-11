@@ -22,7 +22,7 @@
   --radius:    6px;
   --radius-lg: 12px;
   --transition:220ms ease;
-  --max-w:     1100px;
+  --max-w:     1280px;
 }
 
 /* RESET */
@@ -52,7 +52,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   width: 100%;
   max-width: var(--max-w);
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 3rem;
 }
 
 .section { padding: 6rem 0; }
