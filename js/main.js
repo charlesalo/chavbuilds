@@ -41,6 +41,79 @@ function updateActiveNav() {
 }
 window.addEventListener('scroll', updateActiveNav, { passive: true });
 
+// ── SLIDER ────────────────────────────────────────────────────
+function initSlider(wrapperId, dotsId) {
+  const wrapper = document.getElementById(wrapperId);
+  if (!wrapper) return;
+
+  const clip = wrapper.querySelector('.slider-clip');
+  const track = wrapper.querySelector('.slider-track');
+  const cards = Array.from(track.querySelectorAll('.project-card'));
+  const dotsContainer = document.getElementById(dotsId);
+  const prevBtn = wrapper.querySelector('.slider-prev');
+  const nextBtn = wrapper.querySelector('.slider-next');
+
+  if (!cards.length) return;
+
+  // How many cards visible at once depends on card width vs clip width
+  function visibleCount() {
+    const clipW = clip.offsetWidth;
+    const cardW = cards[0].offsetWidth;
+    return Math.round(clipW / cardW) || 1;
+  }
+
+  let current = 0;
+
+  function totalSteps() {
+    return Math.ceil(cards.length / visibleCount());
+  }
+
+  function buildDots() {
+    dotsContainer.innerHTML = '';
+    for (let i = 0; i < totalSteps(); i++) {
+      const dot = document.createElement('button');
+      dot.className = 'slider-dot' + (i === current ? ' active' : '');
+      dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+      dot.addEventListener('click', () => goTo(i));
+      dotsContainer.appendChild(dot);
+    }
+  }
+
+  function goTo(index) {
+    const steps = totalSteps();
+    current = Math.max(0, Math.min(index, steps - 1));
+
+    const cardW = cards[0].offsetWidth + 24; // 24 = gap (1.5rem)
+    const perPage = visibleCount();
+    track.style.transform = `translateX(-${current * perPage * cardW}px)`;
+    track.style.transition = 'transform 0.4s ease';
+
+    // Update dots
+    dotsContainer.querySelectorAll('.slider-dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current >= steps - 1;
+  }
+
+  prevBtn.addEventListener('click', () => goTo(current - 1));
+  nextBtn.addEventListener('click', () => goTo(current + 1));
+
+  // Rebuild on resize
+  window.addEventListener('resize', () => {
+    current = 0;
+    buildDots();
+    goTo(0);
+  });
+
+  buildDots();
+  goTo(0);
+}
+
+initSlider('tab-websites', 'dots-websites');
+initSlider('tab-tools', 'dots-tools');
+
 // ── WORK TABS ──────────────────────────────────────────────────
 const tabBtns = document.querySelectorAll('.tab-btn');
 const tabPanels = {
@@ -57,7 +130,6 @@ tabBtns.forEach(btn => {
     tabBtns.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
-    // Toggle intros
     if (workIntro) workIntro.style.display = target === 'websites' ? '' : 'none';
     if (toolsIntro) toolsIntro.style.display = target === 'tools' ? '' : 'none';
 
@@ -65,13 +137,9 @@ tabBtns.forEach(btn => {
       panel.classList.toggle('hidden', key !== target);
     });
 
-    // Re-trigger animations for newly visible cards
-    tabPanels[target].querySelectorAll('[data-aos]').forEach(el => {
-      el.classList.remove('visible');
-      requestAnimationFrame(() => {
-        setTimeout(() => el.classList.add('visible'), 50);
-      });
-    });
+    // Re-init slider for newly visible tab
+    if (target === 'websites') initSlider('tab-websites', 'dots-websites');
+    if (target === 'tools') initSlider('tab-tools', 'dots-tools');
   });
 });
 
