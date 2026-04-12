@@ -564,23 +564,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .slider-btn {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text);
   width: 2.25rem;
   height: 2.25rem;
   border-radius: 50%;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background var(--transition), border-color var(--transition), color var(--transition);
-  display: flex;
-  align-items: center;
+  padding: 0;
   justify-content: center;
-}
-.slider-btn:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: var(--bg);
 }
 .slider-btn:disabled {
   opacity: 0.3;
