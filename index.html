@@ -54,7 +54,7 @@
   <!-- HERO -->
   <section id="hero">
     <video id="hero-video" autoplay muted loop playsinline preload="auto">
-      <source src="assets/img/abstract-bg.mp4" type="video/mp4" />
+      <source src="assets/img/opening video.mp4" type="video/mp4" />
     </video>
     <div class="hero-content">
 <p class="hero-label">Full-Stack Web Developer · Open to Work</p>
@@ -67,10 +67,7 @@
         <a href="assets/Charles_Marvin_Alo_CV_2026.pdf" target="_blank" rel="noopener" class="btn btn-ghost">Download CV</a>
       </div>
     </div>
-    <a href="#about" class="hero-scroll-hint" aria-label="Scroll to About section">
-      <span>Scroll</span>
-      <div class="scroll-line"></div>
-    </a>
+
   </section>
 
   <!-- ABOUT -->
@@ -195,17 +192,89 @@
 
       <!-- Work category tabs -->
       <div class="work-tabs">
-        <button class="tab-btn active" data-tab="websites">Real Estate Websites</button>
+        <button class="tab-btn active" data-tab="templates">RE Templates</button>
+        <button class="tab-btn" data-tab="websites">Real Estate Websites</button>
         <button class="tab-btn" data-tab="tools">Web Tools & Apps</button>
       </div>
 
+      <!-- Templates intro -->
+      <p class="work-intro" id="templates-intro">
+        Production-ready real estate website templates built from scratch in <strong>Next.js 15</strong> — no WordPress, no page builders, no platform lock-in. Each template ships with live MLS data via the <strong>SimplyRETS API</strong>, Web3Forms lead capture, full Tailwind CSS styling, and pages that load in under a second. Agents and teams get a fully-owned website they can customize and launch in under two weeks — without ongoing subscription costs eating into their margins.
+      </p>
+
+      <!-- RE Templates -->
+      <div class="slider-wrapper" id="tab-templates">
+        <div class="slider-clip">
+        <div class="work-grid slider-track">
+
+        <article class="project-card" data-aos>
+          <div class="project-img">
+            <img src="assets/img/re-templates-landing-page.jpg" alt="Chavbuilds RE Template Platform" loading="lazy" />
+            <div class="project-overlay">
+              <a href="https://re-templates.chavbuilds.com/" target="_blank" rel="noopener" class="btn btn-sm btn-primary">View Live Site</a>
+            </div>
+          </div>
+          <div class="project-info">
+            <h3>Chavbuilds — Template Platform</h3>
+            <p>The sales and discovery platform for Chavbuilds — a marketing site built to convert real estate agents searching for a custom website. Features a cinematic hero video, live template previews with scroll-on-hover, tabbed pricing tiers, a "How It Works" process section, and a Web3Forms contact system wired to email. Built entirely in Next.js 15 with zero CMS dependency.</p>
+            <ul class="project-tags">
+              <li>Next.js 15</li><li>React</li><li>Tailwind CSS</li><li>Web3Forms</li><li>Vercel</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="project-card" data-aos>
+          <div class="project-img">
+            <img src="assets/img/luxury-agent-template.jpg" alt="Luxury Agent real estate website template" loading="lazy" />
+            <div class="project-overlay">
+              <a href="https://re-templates.chavbuilds.com/luxury-agent" target="_blank" rel="noopener" class="btn btn-sm btn-primary">View Live Demo</a>
+            </div>
+          </div>
+          <div class="project-info">
+            <h3>Luxury Agent Template</h3>
+            <p>A premium solo-agent website template built for the luxury real estate market. Full-screen cinematic hero video, property detail pages powered by live MLS listings via the SimplyRETS API, a home valuation widget, and editorial-grade typography — all loading in under a second. Designed to outrank WordPress competitors on Core Web Vitals and convert high-net-worth buyers and sellers from the first impression. Agents get a fully-owned site with zero monthly platform fees.</p>
+            <ul class="project-tags">
+              <li>Next.js 15</li><li>React</li><li>SimplyRETS API</li><li>MLS / IDX</li><li>Tailwind CSS</li><li>Web3Forms</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="project-card" data-aos>
+          <div class="project-img">
+            <img src="assets/img/modern-team-template.jpg" alt="Modern Team real estate website template" loading="lazy" />
+            <div class="project-overlay">
+              <a href="https://re-templates.chavbuilds.com/modern-team" target="_blank" rel="noopener" class="btn btn-sm btn-primary">View Live Demo</a>
+            </div>
+          </div>
+          <div class="project-info">
+            <h3>Modern Team Template</h3>
+            <p>A full-featured team website built for real estate teams and small brokerages ready to scale. Includes MLS-powered property search via SimplyRETS, neighborhood and community guide pages, agent profile roster, home valuation widget, blog, testimonials, and CRM-ready lead capture routed directly to Follow Up Boss or HubSpot. Everything a growing team needs to generate and convert leads — custom-coded, fully owned, and free from the platform subscription model that eats into every agent's margins.</p>
+            <ul class="project-tags">
+              <li>Next.js 15</li><li>React</li><li>SimplyRETS API</li><li>MLS / IDX</li><li>Tailwind CSS</li><li>CRM Integration</li><li>Web3Forms</li>
+            </ul>
+          </div>
+        </article>
+
+        </div><!-- /.slider-track -->
+        </div><!-- /.slider-clip -->
+        <div class="slider-controls">
+          <button class="btn btn-primary slider-btn slider-prev" aria-label="Previous">&#8592;</button>
+          <div class="slider-dots" id="dots-templates"></div>
+          <button class="btn btn-primary slider-btn slider-next" aria-label="Next">&#8594;</button>
+        </div>
+        <div class="work-attribution">
+          <p>Built and owned by me — not client work. Each template is a deployable product agents can launch in under two weeks.</p>
+          <a href="#contact" class="btn btn-ghost">Interested? Let's Talk</a>
+        </div>
+      </div><!-- /.slider-wrapper #tab-templates -->
+
       <!-- Real estate intro -->
-      <p class="work-intro">
+      <p class="work-intro" id="websites-intro" style="display:none;">
         Built during my contract engagement with <strong>Luxury Presence</strong> — an award-winning real estate web platform trusted by over 30% of the <em>Wall Street Journal</em>'s top agents. Each site was customized using HTML, SCSS, and JavaScript, with full attention to brand identity, lead generation, MLS integration, SEO, and cross-device performance. <em>All sites are publicly available and remain the property of their respective clients.</em>
       </p>
 
       <!-- Real estate websites -->
-      <div class="slider-wrapper" id="tab-websites">
+      <div class="slider-wrapper hidden" id="tab-websites">
         <div class="slider-clip">
         <div class="work-grid slider-track">
         <article class="project-card" data-aos>
