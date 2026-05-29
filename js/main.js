@@ -111,16 +111,19 @@ function initSlider(wrapperId, dotsId) {
   goTo(0);
 }
 
+initSlider('tab-templates', 'dots-templates');
 initSlider('tab-websites', 'dots-websites');
 initSlider('tab-tools', 'dots-tools');
 
 // ── WORK TABS ──────────────────────────────────────────────────
 const tabBtns = document.querySelectorAll('.tab-btn');
 const tabPanels = {
+  templates: document.getElementById('tab-templates'),
   websites: document.getElementById('tab-websites'),
   tools: document.getElementById('tab-tools'),
 };
-const workIntro = document.querySelector('.work-intro:not(#tools-intro)');
+const templatesIntro = document.getElementById('templates-intro');
+const websitesIntro = document.getElementById('websites-intro');
 const toolsIntro = document.getElementById('tools-intro');
 
 tabBtns.forEach(btn => {
@@ -130,7 +133,8 @@ tabBtns.forEach(btn => {
     tabBtns.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
-    if (workIntro) workIntro.style.display = target === 'websites' ? '' : 'none';
+    if (templatesIntro) templatesIntro.style.display = target === 'templates' ? '' : 'none';
+    if (websitesIntro) websitesIntro.style.display = target === 'websites' ? '' : 'none';
     if (toolsIntro) toolsIntro.style.display = target === 'tools' ? '' : 'none';
 
     Object.entries(tabPanels).forEach(([key, panel]) => {
@@ -138,6 +142,7 @@ tabBtns.forEach(btn => {
     });
 
     // Re-init slider for newly visible tab
+    if (target === 'templates') initSlider('tab-templates', 'dots-templates');
     if (target === 'websites') initSlider('tab-websites', 'dots-websites');
     if (target === 'tools') initSlider('tab-tools', 'dots-tools');
   });
@@ -256,6 +261,38 @@ if (contactForm) {
     btn.disabled = false;
   });
 }
+
+// ── STAT COUNTERS ──────────────────────────────────────────────
+function animateCounter(el, target, suffix, duration) {
+  const start = performance.now();
+  function tick(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(eased * target) + suffix;
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    counterObserver.unobserve(entry.target);
+    const raw = entry.target.dataset.count;
+    const suffix = entry.target.dataset.suffix || '';
+    animateCounter(entry.target, parseInt(raw, 10), suffix, 1600);
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.meta-num').forEach(el => {
+  const text = el.textContent.trim();
+  const match = text.match(/^(\d+)(.*)$/);
+  if (!match) return;
+  el.dataset.count = match[1];
+  el.dataset.suffix = match[2];
+  el.textContent = '0' + match[2];
+  counterObserver.observe(el);
+});
 
 // ── BACK TO TOP ────────────────────────────────────────────────
 const backToTop = document.getElementById('back-to-top');
