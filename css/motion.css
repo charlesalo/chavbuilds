@@ -1,0 +1,445 @@
+/* ============================================
+   MOTION FOUNDATION
+   Tokens + reveal utility. No layout styles here.
+   ============================================ */
+
+/* ── Motion tokens ─────────────────────────── */
+:root {
+  /* Durations */
+  --duration-fast:   200ms;
+  --duration-medium: 400ms;
+  --duration-slow:   700ms;
+
+  /* Easings — decelerating curves only, nothing overshoots */
+  --ease-out:     cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-in-out:  cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Reveal defaults — override per element or per section */
+  --reveal-distance: 16px;
+  --reveal-duration: var(--duration-slow);
+  --reveal-ease:     var(--ease-premium);
+
+  /* Stagger: delay = index × step */
+  --stagger-step: 70ms;
+}
+
+/* ── Scroll reveal utility ─────────────────────
+   Usage:
+     <div class="animate-on-scroll">…</div>
+
+   Stagger a group by setting --stagger-index on
+   each item (or wrap items in [data-stagger] and
+   motion.js assigns indexes automatically):
+     <li class="animate-on-scroll" style="--stagger-index: 2">
+─────────────────────────────────────────────── */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(var(--reveal-distance));
+  transition:
+    opacity   var(--reveal-duration) var(--reveal-ease),
+    transform var(--reveal-duration) var(--reveal-ease);
+  transition-delay: calc(var(--stagger-index, 0) * var(--stagger-step));
+  will-change: opacity, transform;
+}
+
+.animate-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Release the compositor hint after the reveal finishes */
+.animate-on-scroll.is-done {
+  will-change: auto;
+}
+
+/* ============================================
+   HERO MOTION
+   Parallax targets + overlay layers.
+   Driven by js/hero-motion.js.
+   ============================================ */
+
+/* Parallax + scroll-scale targets: transforms are set
+   inline by JS; hint the compositor once here */
+#hero-video,
+#hero .hero-content {
+  will-change: transform;
+}
+
+/* Drifting radial glow above the video, below the text.
+   Oversized so its slow translate never exposes an edge. */
+#hero .hero-glow {
+  position: absolute;
+  inset: -20%;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    45% 40% at 65% 35%,
+    rgba(196, 168, 130, 0.10),
+    transparent 70%
+  );
+  animation: hero-glow-drift 30s var(--ease-in-out) infinite alternate;
+}
+
+@keyframes hero-glow-drift {
+  from { transform: translate3d(-1.5%, -1%, 0); }
+  to   { transform: translate3d(1.5%, 1.5%, 0); }
+}
+
+/* Scroll-linked darkening layer; JS drives opacity 0 → ~0.3 */
+#hero .hero-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: #0a0a0a;
+  opacity: 0;
+}
+
+/* ============================================
+   ABOUT MOTION
+   Two-phase headline reveal + card hover.
+   ============================================ */
+
+/* Headline phases: 6px rise, second phase 100ms behind.
+   inline-block so the transform applies; each phrase still
+   wraps internally on narrow screens. */
+#about .headline-phase {
+  display: inline-block;
+  --reveal-distance: 6px;
+  --stagger-step: 100ms;
+}
+
+#about .headline-phase--accent {
+  color: var(--accent);
+}
+
+/* Card hover: lift, deeper shadow, faint accent glow on the
+   border. No scaling. */
+#about .about-card {
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+#about .about-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(196, 168, 130, 0.35);
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.35),
+    0 0 12px rgba(196, 168, 130, 0.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #about .about-card,
+  #about .about-card:hover {
+    transform: none;
+  }
+}
+
+/* ============================================
+   SKILLS MOTION
+   Staggered card reveal + VS Code-style item
+   cascade + technology hover.
+   ============================================ */
+
+/* Cards use the foundation reveal; restate the transition here
+   so the stagger delay applies per property and the original
+   border-color hover transition survives the override. */
+#skills .skill-group.animate-on-scroll {
+  transition:
+    opacity   var(--reveal-duration) var(--reveal-ease) calc(var(--stagger-index, 0) * var(--stagger-step)),
+    transform var(--reveal-duration) var(--reveal-ease) calc(var(--stagger-index, 0) * var(--stagger-step)),
+    border-color var(--transition);
+}
+
+/* Technology lines cascade once their card reveals: quick fade,
+   2px rise, 60ms apart — explorer-items feel, no bounce. The
+   transition lives on the visible state with per-property delays
+   so hover color/glow always responds instantly. */
+#skills .skill-group li {
+  opacity: 0;
+  transform: translateY(2px);
+}
+
+#skills .skill-group.is-visible li {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity   var(--duration-fast) var(--ease-out) var(--item-delay, 0ms),
+    transform var(--duration-fast) var(--ease-out) var(--item-delay, 0ms),
+    color var(--transition),
+    text-shadow var(--transition);
+}
+
+#skills .skill-group.is-visible li:nth-child(2) { --item-delay: 60ms; }
+#skills .skill-group.is-visible li:nth-child(3) { --item-delay: 120ms; }
+#skills .skill-group.is-visible li:nth-child(4) { --item-delay: 180ms; }
+#skills .skill-group.is-visible li:nth-child(5) { --item-delay: 240ms; }
+#skills .skill-group.is-visible li:nth-child(6) { --item-delay: 300ms; }
+#skills .skill-group.is-visible li:nth-child(7) { --item-delay: 360ms; }
+#skills .skill-group.is-visible li:nth-child(8) { --item-delay: 420ms; }
+
+/* Technology hover: brighten + tiny gold glow. No transform. */
+#skills .skill-group li:hover {
+  color: var(--white);
+  text-shadow: 0 0 6px rgba(196, 168, 130, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #skills .skill-group li {
+    opacity: 1;
+    transform: none;
+  }
+  #skills .skill-group.is-visible li {
+    transition: color var(--transition), text-shadow var(--transition);
+  }
+}
+
+/* ============================================
+   WORK MOTION
+   Project card hover, glass reflection, and
+   tab-switch support (FLIP driven by main.js).
+   ============================================ */
+
+/* Card hover: existing -3px lift keeps working; add a soft
+   drop shadow + slightly stronger accent border glow */
+.project-card {
+  transition:
+    transform var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+/* Cards also ride the scroll reveal: while revealing, opacity and
+   transform belong to the reveal (with per-property stagger delay);
+   once done, hand transform back to the fast hover transition. */
+.project-card.animate-on-scroll {
+  transition:
+    opacity   var(--reveal-duration) var(--reveal-ease) calc(var(--stagger-index, 0) * var(--stagger-step)),
+    transform var(--reveal-duration) var(--reveal-ease) calc(var(--stagger-index, 0) * var(--stagger-step)),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.project-card.animate-on-scroll.is-done {
+  transition:
+    transform var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.project-card:hover {
+  border-color: rgba(196, 168, 130, 0.45);
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.35),
+    0 0 18px rgba(196, 168, 130, 0.10);
+}
+
+/* Image: deeper, slower zoom than the old 1.03 */
+.project-img img {
+  transition: transform var(--duration-slow) var(--ease-premium);
+}
+.project-card:hover .project-img img {
+  transform: scale(1.05);
+}
+
+/* Overlay: a touch darker, and above the reflection layer */
+.project-overlay {
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2;
+}
+
+/* Description lifts 4px; tags follow 40ms behind and fade up
+   from a slightly dimmed resting state — one gesture, two beats */
+.project-info p {
+  transition: transform var(--duration-medium) var(--ease-premium);
+}
+.project-card:hover .project-info p {
+  transform: translateY(-4px);
+}
+
+.project-tags {
+  opacity: 0.85;
+  transition:
+    transform var(--duration-medium) var(--ease-premium) 40ms,
+    opacity   var(--duration-medium) var(--ease-premium) 40ms;
+}
+.project-card:hover .project-tags {
+  transform: translateY(-4px);
+  opacity: 1;
+}
+
+/* Glass reflection: one soft diagonal streak crosses the
+   screenshot when the card is hovered — light answering intent,
+   not an ambient loop. Transform-only, clipped by .project-img. */
+.project-img::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.05) 48%,
+    rgba(255, 255, 255, 0.09) 50%,
+    rgba(255, 255, 255, 0.05) 52%,
+    transparent 58%
+  );
+  transform: translateX(-130%);
+}
+
+.project-card:hover .project-img::after {
+  animation: project-sheen 1200ms var(--ease-in-out) 1;
+}
+
+@keyframes project-sheen {
+  from { transform: translateX(-130%); }
+  to   { transform: translateX(130%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-img::after {
+    animation: none;
+  }
+  .project-card:hover,
+  .project-card:hover .project-img img,
+  .project-card:hover .project-info p,
+  .project-card:hover .project-tags {
+    transform: none;
+  }
+}
+
+/* ============================================
+   CONTACT MOTION
+   Input focus treatment + submit button hover.
+   ============================================ */
+
+/* Inputs: on focus the border warms (base style), the field
+   brightens a step, and a soft accent glow rings it. The glow
+   doubles as a clear focus indicator since outline is disabled. */
+.form-group input,
+.form-group textarea {
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  background-color: #222222;
+  box-shadow:
+    0 0 0 3px rgba(196, 168, 130, 0.12),
+    0 0 14px rgba(196, 168, 130, 0.08);
+}
+
+/* Error fields keep their red identity when focused */
+.form-group.has-error input:focus,
+.form-group.has-error textarea:focus {
+  box-shadow: 0 0 0 3px rgba(201, 123, 123, 0.12);
+}
+
+/* Submit button: gentle lift-scale, deeper shadow, and a faint
+   shimmer that sweeps across every ~2.5s while hovered */
+.contact-form button[type="submit"] {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    background var(--transition);
+}
+
+.contact-form button[type="submit"]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.22) 50%,
+    transparent 60%
+  );
+  transform: translateX(-130%);
+}
+
+.contact-form button[type="submit"]:hover:not(:disabled) {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 2px 10px rgba(196, 168, 130, 0.25);
+}
+
+.contact-form button[type="submit"]:hover:not(:disabled)::after {
+  animation: btn-shimmer 2.4s var(--ease-in-out) infinite;
+}
+
+@keyframes btn-shimmer {
+  0%   { transform: translateX(-130%); }
+  45%  { transform: translateX(130%); }
+  100% { transform: translateX(130%); }
+}
+
+/* Keyboard focus gets an explicit ring on top of the hover look */
+.contact-form button[type="submit"]:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-form button[type="submit"]:hover:not(:disabled) {
+    transform: none;
+  }
+  .contact-form button[type="submit"]:hover:not(:disabled)::after {
+    animation: none;
+  }
+}
+
+/* ============================================
+   ATMOSPHERE
+   Full-page ambient canvas, created by
+   js/atmosphere.js. Fixed behind all content.
+   ============================================ */
+#atmosphere {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ── Reduced motion: show everything, instantly ── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-on-scroll {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  #hero .hero-glow {
+    animation: none;
+  }
+
+  #hero-video,
+  #hero .hero-content {
+    will-change: auto;
+  }
+
+  .available-dot {
+    animation: none;
+  }
+
+  #back-to-top,
+  #back-to-top.visible {
+    transform: none;
+  }
+}

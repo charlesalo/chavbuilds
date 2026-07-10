@@ -21,7 +21,7 @@
 
   --radius:    6px;
   --radius-lg: 12px;
-  --transition:220ms ease;
+  --transition: var(--duration-fast) var(--ease-out); /* tokens: css/motion.css */
   --max-w:     1280px;
 }
 
@@ -91,7 +91,13 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: 0.01em;
-  transition: all var(--transition);
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition),
+    opacity var(--transition);
   white-space: nowrap;
   width: fit-content;
 }
@@ -188,7 +194,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   width: 22px; height: 2px;
   background: var(--text);
   border-radius: 2px;
-  transition: all var(--transition);
+  transition: transform var(--transition), opacity var(--transition);
 }
 
 .nav-mobile {
@@ -516,7 +522,10 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   color: var(--text-muted);
   padding: 0.6rem 1.25rem;
   border-radius: var(--radius) var(--radius) 0 0;
-  transition: all var(--transition);
+  transition:
+    color var(--transition),
+    background var(--transition),
+    border-color var(--transition);
   position: relative;
   bottom: -1px;
   border: 1px solid transparent;
@@ -614,9 +623,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .project-img img {
   width: 100%; height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
 }
-.project-card:hover .project-img img { transform: scale(1.03); }
+/* img zoom transition + hover scale live in css/motion.css */
 
 /* Placeholder for missing screenshots */
 .placeholder-img {
@@ -689,16 +697,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   letter-spacing: 0.03em;
 }
 
-/* Scroll-in animation */
-[data-aos] {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-[data-aos].visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+/* Scroll-in animation: see .animate-on-scroll in css/motion.css */
 
 /* ============================================
    SERVICES
@@ -1011,7 +1010,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   opacity: 0;
   transform: translateY(12px);
   pointer-events: none;
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity var(--transition), transform var(--transition);
   z-index: 999;
 }
 #back-to-top.visible {

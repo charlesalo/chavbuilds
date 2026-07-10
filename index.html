@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="icon" type="image/svg+xml" href="assets/chavbuilds-favicon.png" />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/motion.css" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -56,6 +57,8 @@
     <video id="hero-video" autoplay muted loop playsinline preload="auto">
       <source src="assets/img/opening video.mp4" type="video/mp4" />
     </video>
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-shade" aria-hidden="true"></div>
     <div class="hero-content">
 <p class="hero-label">Full-Stack Web Developer · Open to Work</p>
       <h1 class="hero-name">Charles Alo</h1>
@@ -77,7 +80,10 @@
         <div class="about-text">
           <div class="section-header">
             <span class="section-tag">About</span>
-            <h2>A Full-Stack Developer <span style="color: var(--accent);">Who Builds Tools People Actually Use</span></h2>
+            <h2>
+              <span class="headline-phase animate-on-scroll">A Full-Stack Developer</span>
+              <span class="headline-phase headline-phase--accent animate-on-scroll" style="--stagger-index: 1;">Who Builds Tools People Actually Use</span>
+            </h2>
           </div>
           <p>
             I'm a full-stack web developer who spent 1.5 years at <strong>Luxury Presence</strong> building and shipping production websites at volume — 500+ high-end real estate website builds and revisions delivered with HTML, CSS/SCSS, and JavaScript within a proprietary CMS.
@@ -134,8 +140,8 @@
         <span class="section-tag">Skills</span>
         <h2>Tools and Technologies I Work With</h2>
       </div>
-      <div class="skills-grid">
-        <div class="skill-group">
+      <div class="skills-grid" data-stagger>
+        <div class="skill-group animate-on-scroll">
           <h4>Frontend</h4>
           <ul>
             <li>HTML5 / CSS3 / SCSS</li>
@@ -147,7 +153,7 @@
             <li>jQuery / Ajax</li>
           </ul>
         </div>
-        <div class="skill-group">
+        <div class="skill-group animate-on-scroll">
           <h4>Backend</h4>
           <ul>
             <li>Node.js / Express</li>
@@ -157,7 +163,7 @@
             <li>OOP / MVC Architecture</li>
           </ul>
         </div>
-        <div class="skill-group">
+        <div class="skill-group animate-on-scroll">
           <h4>Tools & Platforms</h4>
           <ul>
             <li>Git / GitHub</li>
@@ -168,7 +174,7 @@
             <li>Vercel / Render / Cloudflare</li>
           </ul>
         </div>
-        <div class="skill-group">
+        <div class="skill-group animate-on-scroll">
           <h4>Integrations & APIs</h4>
           <ul>
             <li>YouTube Data API v3</li>
@@ -208,9 +214,9 @@
       <!-- RE Templates -->
       <div class="slider-wrapper" id="tab-templates">
         <div class="slider-clip">
-        <div class="work-grid slider-track">
+        <div class="work-grid slider-track" data-stagger>
 
-        <article class="project-card" data-aos>
+        <article class="project-card animate-on-scroll">
           <div class="project-img">
             <img src="assets/img/re-templates-landing-page.jpg" alt="Chavbuilds RE Template Platform" loading="lazy" />
             <div class="project-overlay">
@@ -226,7 +232,7 @@
           </div>
         </article>
 
-        <article class="project-card" data-aos>
+        <article class="project-card animate-on-scroll">
           <div class="project-img">
             <img src="assets/img/luxury-agent-template.jpg" alt="Luxury Agent real estate website template" loading="lazy" />
             <div class="project-overlay">
@@ -242,7 +248,7 @@
           </div>
         </article>
 
-        <article class="project-card" data-aos>
+        <article class="project-card animate-on-scroll">
           <div class="project-img">
             <img src="assets/img/modern-team-template.jpg" alt="Modern Team real estate website template" loading="lazy" />
             <div class="project-overlay">
@@ -279,8 +285,8 @@
       <!-- Real estate websites -->
       <div class="slider-wrapper hidden" id="tab-websites">
         <div class="slider-clip">
-        <div class="work-grid slider-track">
-        <article class="project-card" data-aos>
+        <div class="work-grid slider-track" data-stagger>
+        <article class="project-card animate-on-scroll">
           <div class="project-img">
             <img src="assets/img/vilairestates-og.jpg" alt="Vilaire Estates website" loading="lazy" />
             <div class="project-overlay">
@@ -296,7 +302,7 @@
           </div>
         </article>
 
-        <article class="project-card" data-aos>
+        <article class="project-card animate-on-scroll">
           <div class="project-img">
             <img src="assets/img/jdadamson-og.jpg" alt="JD Adamson Realtor website" loading="lazy" />
             <div class="project-overlay">
@@ -312,7 +318,7 @@
           </div>
         </article>
 
-        <article class="project-card" data-aos>
+        <article class="project-card animate-on-scroll">
           <div class="project-img">
             <img src="assets/img/mattandsusan-og.jpg" alt="Matt and Susan Real Estate website" loading="lazy" />
             <div class="project-overlay">
@@ -328,7 +334,7 @@
           </div>
         </article>
 
-        <article class="project-card" data-aos>
+        <article class="project-card animate-on-scroll">
           <div class="project-img">
             <img src="assets/img/pineappleplace-og.jpg" alt="Pineapple Place AAH website" loading="lazy" />
             <div class="project-overlay">
@@ -344,7 +350,7 @@
           </div>
         </article>
 
-        <article class="project-card" data-aos>
+        <article class="project-card animate-on-scroll">
           <div class="project-img">
             <img src="assets/img/madchase-og.jpg" alt="Mad Chase Real Estate website" loading="lazy" />
             <div class="project-overlay">
@@ -360,7 +366,7 @@
           </div>
         </article>
 
-        <article class="project-card" data-aos>
+        <article class="project-card animate-on-scroll">
           <div class="project-img">
             <img src="assets/img/naparealestate-og.jpg" alt="Napa Real Estate website" loading="lazy" />
             <div class="project-overlay">
@@ -396,9 +402,9 @@
       </p>
       <div class="slider-wrapper hidden" id="tab-tools">
         <div class="slider-clip">
-        <div class="work-grid slider-track">
+        <div class="work-grid slider-track" data-stagger>
 
-        <article class="project-card" data-aos>
+        <article class="project-card animate-on-scroll">
           <div class="project-img">
             <img src="assets/project-placeholder.jpg" alt="Enhanced Magic CSS Chrome extension" loading="lazy" />
             <div class="project-overlay">
@@ -414,7 +420,7 @@
           </div>
         </article>
 
-        <article class="project-card" data-aos>
+        <article class="project-card animate-on-scroll">
           <div class="project-img">
             <img src="assets/project-placeholder.jpg" alt="Vlog Migration Tool web app" loading="lazy" />
             <div class="project-overlay">
@@ -430,7 +436,7 @@
           </div>
         </article>
 
-        <article class="project-card" data-aos>
+        <article class="project-card animate-on-scroll">
           <div class="project-img">
             <img src="assets/project-placeholder.jpg" alt="Vlog Migration Tool Chrome Extension" loading="lazy" />
             <div class="project-overlay">
@@ -446,7 +452,7 @@
           </div>
         </article>
 
-        <article class="project-card" data-aos>
+        <article class="project-card animate-on-scroll">
           <div class="project-img">
             <img src="assets/project-placeholder.jpg" alt="SEO Title Generator" loading="lazy" />
             <div class="project-overlay">
@@ -562,5 +568,8 @@
   </footer>
 
   <script src="js/main.js"></script>
+  <script src="js/motion.js"></script>
+  <script src="js/hero-motion.js"></script>
+  <script src="js/atmosphere.js"></script>
 </body>
 </html>
