@@ -317,6 +317,12 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   color: var(--accent);
   margin-bottom: 1.25rem;
 }
+/* Keep each phrase intact as a unit: if the line wraps on narrow
+   screens, it breaks at the "·" separator instead of splitting
+   "Open" from "to Work" mid-phrase. */
+.hero-label-phrase {
+  white-space: nowrap;
+}
 
 .hero-name {
   font-family: var(--font-serif);
