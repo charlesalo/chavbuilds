@@ -1132,6 +1132,13 @@ footer {
     align-items: flex-start;
     gap: 1rem;
   }
+  /* Column layout flips the main axis to vertical, so the row rule's
+     flex: 1 1 320px would apply that 320px basis (and grow) to
+     height instead of width, stretching the paragraph to fill the
+     section and shoving the button far down. */
+  .work-attribution p {
+    flex: 0 1 auto;
+  }
   .project-info { padding: 1.25rem; }
   .project-info p { font-size: 0.82rem; }
   .project-tags { flex-wrap: wrap; }
