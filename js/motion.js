@@ -38,31 +38,58 @@
 
     applyStagger();
 
-    let remaining = elements.length;
+    const pending = new Set(elements);
 
+    function teardown() {
+      observer.disconnect();
+      window.removeEventListener('scroll', sweepMissed);
+    }
+
+    function reveal(el) {
+      if (!pending.has(el)) return;
+      pending.delete(el);
+      el.classList.add(VISIBLE_CLASS);
+      el.addEventListener('transitionend', () => el.classList.add(DONE_CLASS), { once: true });
+      observer.unobserve(el);
+      if (pending.size === 0) teardown();
+    }
+
+    // threshold 0 + no shrunk rootMargin: any overlap at all counts.
+    // A fast mobile flick can carry an element across the viewport
+    // between two IntersectionObserver samples — a stricter threshold
+    // makes that skip more likely, leaving the element stuck at
+    // opacity 0 forever.
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-
-        const el = entry.target;
-        el.classList.add(VISIBLE_CLASS);
-        el.addEventListener('transitionend', () => el.classList.add(DONE_CLASS), { once: true });
-
-        observer.unobserve(el);
-        remaining -= 1;
-        if (remaining === 0) observer.disconnect();
+        if (entry.isIntersecting) reveal(entry.target);
       });
     }, {
-      threshold: 0.15,
-      rootMargin: '0px 0px -10% 0px',
+      threshold: 0,
+      rootMargin: '0px',
     });
 
     elements.forEach(el => observer.observe(el));
 
+    // Safety net for the rare case a flick still skips the observer
+    // entirely: on scroll, reveal anything already above the fold
+    // instead of leaving it invisible for the rest of the session.
+    let sweepQueued = false;
+    function sweepMissed() {
+      if (sweepQueued) return;
+      sweepQueued = true;
+      requestAnimationFrame(() => {
+        sweepQueued = false;
+        pending.forEach(el => {
+          if (el.getBoundingClientRect().top < window.innerHeight) reveal(el);
+        });
+      });
+    }
+    window.addEventListener('scroll', sweepMissed, { passive: true });
+
     // If the user enables reduced motion mid-session, finish instantly
     reducedMotion.addEventListener('change', (e) => {
       if (!e.matches) return;
-      observer.disconnect();
+      teardown();
       revealAll(elements);
     });
   }
