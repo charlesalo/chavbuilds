@@ -3,15 +3,6 @@
    main.js
    ============================================ */
 
-// ── SHARED MOTION TOKENS (resolved once for the Web Animations API) ──
-const MOTION = (() => {
-  const s = getComputedStyle(document.documentElement);
-  return {
-    easeOut: s.getPropertyValue('--ease-out').trim() || 'ease-out',
-    easePremium: s.getPropertyValue('--ease-premium').trim() || 'ease-out',
-  };
-})();
-
 // ── NAV: scroll state ──────────────────────────────────────────
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => {
@@ -95,7 +86,7 @@ function initSlider(wrapperId, dotsId) {
     const cardW = cards[0].offsetWidth + 24; // 24 = gap (1.5rem)
     const perPage = visibleCount();
     track.style.transform = `translateX(-${current * perPage * cardW}px)`;
-    track.style.transition = 'transform var(--duration-medium) var(--ease-out)';
+    track.style.transition = 'transform 0.4s ease';
 
     // Update dots
     dotsContainer.querySelectorAll('.slider-dot').forEach((d, i) => {
@@ -124,108 +115,53 @@ initSlider('tab-templates', 'dots-templates');
 initSlider('tab-websites', 'dots-websites');
 initSlider('tab-tools', 'dots-tools');
 
-// ── WORK TABS (FLIP transition) ────────────────────────────────
+// ── WORK TABS ──────────────────────────────────────────────────
 const tabBtns = document.querySelectorAll('.tab-btn');
 const tabPanels = {
   templates: document.getElementById('tab-templates'),
   websites: document.getElementById('tab-websites'),
   tools: document.getElementById('tab-tools'),
 };
-const tabIntros = {
-  templates: document.getElementById('templates-intro'),
-  websites: document.getElementById('websites-intro'),
-  tools: document.getElementById('tools-intro'),
-};
-const tabsReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-let activeTab = 'templates';
-let tabSwitching = false;
-
-// Instant swap — the final state both paths land on
-function showTab(target) {
-  Object.entries(tabIntros).forEach(([key, intro]) => {
-    if (intro) intro.style.display = key === target ? '' : 'none';
-  });
-  Object.entries(tabPanels).forEach(([key, panel]) => {
-    panel.classList.toggle('hidden', key !== target);
-  });
-  initSlider(`tab-${target}`, `dots-${target}`);
-}
-
-function enterTab(newPanel, firstHeight) {
-  // LAST: measure the incoming panel, then INVERT + PLAY the
-  // height difference so content below never jumps
-  const lastHeight = newPanel.offsetHeight;
-  if (Math.abs(lastHeight - firstHeight) > 1) {
-    newPanel.style.overflow = 'hidden';
-    const heightAnim = newPanel.animate(
-      [{ height: `${firstHeight}px` }, { height: `${lastHeight}px` }],
-      { duration: 400, easing: MOTION.easePremium }
-    );
-    heightAnim.onfinish = () => { newPanel.style.overflow = ''; };
-  }
-
-  newPanel.animate(
-    [{ opacity: 0 }, { opacity: 1 }],
-    { duration: 200, easing: MOTION.easeOut }
-  );
-
-  newPanel.querySelectorAll('.project-card').forEach((card, i) => {
-    // Settle the scroll-reveal state up front, suppressing its
-    // transition so it can't replay underneath this entrance
-    card.style.transition = 'none';
-    card.classList.add('is-visible', 'is-done');
-    void card.offsetWidth;
-    card.style.transition = '';
-    card.animate(
-      [
-        { opacity: 0, transform: 'translateY(12px)' },
-        { opacity: 1, transform: 'translateY(0)' },
-      ],
-      { duration: 400, delay: i * 70, easing: MOTION.easePremium, fill: 'backwards' }
-    );
-  });
-}
+const templatesIntro = document.getElementById('templates-intro');
+const websitesIntro = document.getElementById('websites-intro');
+const toolsIntro = document.getElementById('tools-intro');
 
 tabBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     const target = btn.dataset.tab;
-    if (target === activeTab || tabSwitching) return;
 
     tabBtns.forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
-    const oldPanel = tabPanels[activeTab];
-    const newPanel = tabPanels[target];
-    activeTab = target;
+    if (templatesIntro) templatesIntro.style.display = target === 'templates' ? '' : 'none';
+    if (websitesIntro) websitesIntro.style.display = target === 'websites' ? '' : 'none';
+    if (toolsIntro) toolsIntro.style.display = target === 'tools' ? '' : 'none';
 
-    if (tabsReducedMotion.matches || !oldPanel.animate) {
-      showTab(target);
-      return;
-    }
+    Object.entries(tabPanels).forEach(([key, panel]) => {
+      panel.classList.toggle('hidden', key !== target);
+    });
 
-    tabSwitching = true;
-
-    // FIRST: measure the outgoing panel before anything changes
-    const firstHeight = oldPanel.offsetHeight;
-
-    const exit = oldPanel.animate(
-      [
-        { opacity: 1, transform: 'translateY(0)' },
-        { opacity: 0, transform: 'translateY(8px)' },
-      ],
-      { duration: 200, easing: MOTION.easeOut, fill: 'forwards' }
-    );
-
-    exit.onfinish = () => {
-      showTab(target);
-      exit.cancel(); // hidden now; drop the forwards fill
-      enterTab(newPanel, firstHeight);
-      tabSwitching = false;
-    };
+    // Re-init slider for newly visible tab
+    if (target === 'templates') initSlider('tab-templates', 'dots-templates');
+    if (target === 'websites') initSlider('tab-websites', 'dots-websites');
+    if (target === 'tools') initSlider('tab-tools', 'dots-tools');
   });
 });
 
-// Scroll-in reveals are handled by js/motion.js (.animate-on-scroll)
+// ── SCROLL-IN ANIMATIONS ───────────────────────────────────────
+const aosObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      aosObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('[data-aos]').forEach((el, i) => {
+  el.style.transitionDelay = `${i * 80}ms`;
+  aosObserver.observe(el);
+});
 
 // ── CONTACT FORM (Web3Forms) ───────────────────────────────────
 const contactForm = document.getElementById('contact-form');
@@ -344,11 +280,7 @@ const counterObserver = new IntersectionObserver((entries) => {
     counterObserver.unobserve(entry.target);
     const raw = entry.target.dataset.count;
     const suffix = entry.target.dataset.suffix || '';
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      entry.target.textContent = raw + suffix;
-    } else {
-      animateCounter(entry.target, parseInt(raw, 10), suffix, 800);
-    }
+    animateCounter(entry.target, parseInt(raw, 10), suffix, 1600);
   });
 }, { threshold: 0.5 });
 
@@ -375,8 +307,7 @@ const bttObserver = new IntersectionObserver((entries) => {
 if (contactSection) bttObserver.observe(contactSection);
 
 backToTop.addEventListener('click', () => {
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 // ── SMOOTH ACTIVE NAV STYLING ──────────────────────────────────
